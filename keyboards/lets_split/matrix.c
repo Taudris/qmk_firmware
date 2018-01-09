@@ -30,6 +30,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "pro_micro.h"
 #include "config.h"
 #include "timer.h"
+#include "rgblight.h"
 
 #ifdef USE_I2C
 #  include "i2c.h"
@@ -270,6 +271,9 @@ uint8_t matrix_scan(void)
             for (int i = 0; i < ROWS_PER_HAND; ++i) {
                 matrix[slaveOffset+i] = 0;
             }
+
+            //mark leds as dirty
+            rgblight_set();
         }
     } else {
         // turn off the indicator led on no error

@@ -13,7 +13,9 @@
 #define I2C_ACK 1
 #define I2C_NACK 0
 
+#ifndef SLAVE_BUFFER_SIZE
 #define SLAVE_BUFFER_SIZE 0x10
+#endif
 
 // i2c SCL clock frequency
 #define SCL_CLOCK  400000L
