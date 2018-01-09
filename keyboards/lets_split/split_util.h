@@ -8,8 +8,11 @@
 
 extern volatile bool isLeftHand;
 
-// slave version of matix scan, defined in matrix.c
+// slave version of matrix scan, defined in matrix.c
 void matrix_slave_scan(void);
+
+// slave version of matrix_scan_user, defined in matrix.c
+void matrix_slave_scan_user(void);
 
 void split_keyboard_setup(void);
 bool has_usb(void);
