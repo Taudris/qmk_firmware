@@ -15,14 +15,16 @@ extern rgblight_config_t rgblight_config;
 // entirely and just use numbers.
 #define _QWERTY 0
 #define _HYPER 1
-#define _RAISE 2
-#define _LOWER 3
-#define _COMBO 4
+#define _GAME 2
+#define _RAISE 13
+#define _LOWER 14
+#define _COMBO 15
 #define _ADJUST 16
 
 enum custom_keycodes {
   QWERTY = SAFE_RANGE,
   HYPER,
+  GAME,
   RAISE,
   LOWER,
   COMBO,
@@ -43,7 +45,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------| |------+------+------+------+------+------|
  * | Tab  |   A  |   S  |   D  |   F  |   G  | |   H  |   J  |   K  |   L  |   ;  |   '  |
  * |------+------+------+------+------+------| |------+------+------+------+------+------|
- * | Shift|   Z  |   X  |   C  |   V  |   B  | |   N  |   M  |   ,  |   .  |   /  |Enter |
+ * |SftCap|   Z  |   X  |   C  |   V  |   B  | |   N  |   M  |   ,  |   .  |   /  |Enter |
  * |------+------+------+------+------+------| |------+------+------+------+------+------|
  * | Ctrl | GUI  |MonOff|CtAlDl|Lower |Space | |Space |Raise | Vol- | Vol+ | RAlt |Adjust|
  * `-----------------------------------------' `-----------------------------------------'
@@ -67,10 +69,28 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * `-----------------------------------------' `-----------------------------------------'
  */
 [_HYPER] = KEYMAP( \
-  KC_ESC,          H(KC_Q), H(KC_W), H(KC_E), H(KC_R), H(KC_T), /*  */ H(KC_Y), H(KC_U), H(KC_I),    H(KC_O),   H(KC_P),    KC_BSPC, \
-  KC_TAB,          H(KC_A), H(KC_S), H(KC_D), H(KC_F), H(KC_G), /*  */ H(KC_H), H(KC_J), H(KC_K),    H(KC_L),   H(KC_SCLN), H(KC_QUOT), \
-  LSFT_T(KC_CAPS), H(KC_Z), H(KC_X), H(KC_C), H(KC_V), H(KC_B), /*  */ H(KC_N), H(KC_M), H(KC_COMM), H(KC_DOT), H(KC_SLSH), KC_ENT, \
-  KC_LCTL,         KC_LGUI, MONOFF,  CTALDEL, LOWER, H(KC_SPC), /*  */ H(KC_SPC), RAISE, KC_VOLD,    KC_VOLU,   KC_RALT,    ADJUST \
+  KC_ESC,  H(KC_Q), H(KC_W), H(KC_E), H(KC_R), H(KC_T), /*  */ H(KC_Y), H(KC_U), H(KC_I),    H(KC_O),   H(KC_P),    KC_BSPC, \
+  KC_TAB,  H(KC_A), H(KC_S), H(KC_D), H(KC_F), H(KC_G), /*  */ H(KC_H), H(KC_J), H(KC_K),    H(KC_L),   H(KC_SCLN), H(KC_QUOT), \
+  KC_LSFT, H(KC_Z), H(KC_X), H(KC_C), H(KC_V), H(KC_B), /*  */ H(KC_N), H(KC_M), H(KC_COMM), H(KC_DOT), H(KC_SLSH), KC_ENT, \
+  KC_LCTL, KC_LGUI, MONOFF,  CTALDEL, LOWER, H(KC_SPC), /*  */ H(KC_SPC), RAISE, KC_VOLD,    KC_VOLU,   KC_RALT,    ADJUST \
+),
+
+/* Game
+ * ,-----------------------------------------. ,-----------------------------------------.
+ * | Esc  |   Q  |   W  |   E  |   R  |   T  | |   Y  |   U  |   I  |   O  |   P  | Bksp |
+ * |------+------+------+------+------+------| |------+------+------+------+------+------|
+ * | Tab  |   A  |   S  |   D  |   F  |   G  | |   H  |   J  |   K  |   L  |   ;  |   '  |
+ * |------+------+------+------+------+------| |------+------+------+------+------+------|
+ * | Shift|   Z  |   X  |   C  |   V  |   B  | |   N  |   M  |   ,  |   .  |   /  |Enter |
+ * |------+------+------+------+------+------| |------+------+------+------+------+------|
+ * | Ctrl | GUI  |MonOff|CtAlDl|Lower |Space | |Space |Raise | Vol- | Vol+ | RAlt |Adjust|
+ * `-----------------------------------------' `-----------------------------------------'
+ */
+[_GAME] = KEYMAP( \
+  KC_ESC,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    /*  */ KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSPC, \
+  KC_TAB,  KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    /*  */ KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT, \
+  KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    /*  */ KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_ENT, \
+  KC_LCTL, KC_LGUI, MONOFF,  CTALDEL, LOWER,   KC_SPC,  /*  */ KC_SPC,  RAISE,   KC_VOLD, KC_VOLU, KC_RALT, ADJUST \
 ),
 
 /* Raise
@@ -131,7 +151,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * ,-----------------------------------------. ,-----------------------------------------.
  * |      |      |      |      |      |      | |      |      |      |      |      |      |
  * |------+------+------+------+------+------| |------+------+------+------+------+------|
- * |RGBMod|      |      |      |      |      | |      |Qwerty|Hyper |      |      |      |
+ * |RGBMod|      |      |      |      |      | |      |Qwerty|Hyper |Game  |      |      |
  * |------+------+------+------+------+------| |------+------+------+------+------+------|
  * |RGBSld|RGBTog|      |      |      |      | |      |      |      |      |      |      |
  * |------+------+------+------+------+------| |------+------+------+------+------+------|
@@ -140,7 +160,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 [_ADJUST] =  KEYMAP( \
   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, /*  */ XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, \
-  RGB_MOD, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, /*  */ XXXXXXX, QWERTY,  HYPER,   XXXXXXX, XXXXXXX, XXXXXXX, \
+  RGB_MOD, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, /*  */ XXXXXXX, QWERTY,  HYPER,   GAME,    XXXXXXX, XXXXXXX, \
   RGB_SLD, RGB_TOG, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, /*  */ XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, \
   RGB_HUD, RGB_HUI, RGB_VAD, RGB_VAI, LOWER,   XXXXXXX, /*  */ FLSHRST, RAISE,   XXXXXXX, XXXXXXX, XXXXXXX, ADJUST \
 )
@@ -163,6 +183,9 @@ uint32_t layer_state_set_user(uint32_t state) {
       break;
     case _HYPER:
       overlay_color_set(0, 255);
+      break;
+    case _GAME:
+      overlay_color_set(96, 255);
       break;
     case _RAISE:
       overlay_color_set(160, 255);
