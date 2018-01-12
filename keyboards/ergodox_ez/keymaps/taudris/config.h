@@ -1,0 +1,19 @@
+#ifndef CONFIG_USER_H
+#define CONFIG_USER_H
+#include "../../config.h"
+
+
+#undef IGNORE_MOD_TAP_INTERRUPT
+#define PERMISSIVE_HOLD
+#define ONESHOT_TAP_TOGGLE 2
+
+#undef RGBLIGHT_HUE_STEP
+#define RGBLIGHT_HUE_STEP 8
+
+#undef RGBLIGHT_SAT_STEP
+#define RGBLIGHT_SAT_STEP 64
+
+#undef RGBLIGHT_VAL_STEP
+#define RGBLIGHT_VAL_STEP 16
+
+#endif
