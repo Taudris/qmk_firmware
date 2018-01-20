@@ -179,22 +179,22 @@ uint32_t layer_state_set_user(uint32_t state) {
   uint32_t highest_layer = biton32(lighting_layer_state);
   switch (highest_layer) {
     case _QWERTY:
-      overlay_color_clear();
+      overlay_color_clear(); //no color
       break;
     case _HYPER:
-      overlay_color_set(0, 255);
+      overlay_color_set(96, 255); //yellowish green
       break;
     case _GAME:
-      overlay_color_set(96, 255);
+      overlay_color_set(0, 255); //blood red
       break;
     case _RAISE:
-      overlay_color_set(160, 255);
+      overlay_color_set(160, 255); //teal
       break;
     case _LOWER:
-      overlay_color_set(232, 255);
+      overlay_color_set(232, 255); //blue
       break;
     case _COMBO:
-      overlay_color_set(32, 255);
+      overlay_color_set(32, 255); //orange
       break;
     //case _ADJUST: excluded
   }
@@ -218,6 +218,12 @@ bool process_record_user_internal(uint16_t keycode, keyrecord_t *record) {
     case HYPER:
       if (record->event.pressed) {
         default_layer_set(1UL<<_HYPER);
+        layer_state_change();
+      }
+      return false;
+    case GAME:
+      if (record->event.pressed) {
+        default_layer_set(1UL<<_GAME);
         layer_state_change();
       }
       return false;
