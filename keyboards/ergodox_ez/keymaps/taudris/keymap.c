@@ -8,6 +8,8 @@
 #include "version.h"
 #include "config.h"
 #include "lighting.h"
+#include "overlay_effect.h"
+#include "overlay.h"
 
 #define BASE 0 // default layer
 #define SYMB 1 // symbols
@@ -228,6 +230,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         #endif
         return false;
       case KC_RESET:
+        overlay_effect_clear();
+        rgblight_sethsv_noeeprom(0, 0, 0);
+        matrix_scan_user();
         ergodox_right_led_1_on();
         ergodox_right_led_2_on();
         ergodox_right_led_3_on();
@@ -253,6 +258,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         ergodox_right_led_3_off();
         reset_keyboard();
         return false;
+      case RGB_MIN ... RGB_MAX:
+        if (keycode != RGB_TOG) {
+          overlay_effect_clear(); //clear the overlay effect so the user can see the RGB adjustments more clearly
+        }
+        break;
     }
   }
 
@@ -261,15 +271,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 // Runs just one time when the keyboard initializes.
 void matrix_init_user(void) {
-#ifdef RGBLIGHT_COLOR_LAYER_0
-  rgblight_setrgb(RGBLIGHT_COLOR_LAYER_0);
-#endif
 };
 
 // Runs constantly in the background, in a loop.
 void matrix_scan_user(void) {
+  overlay_effect_task();
   lighting_task();
 };
+
+static uint8_t last_layer;
 
 // Runs whenever there is a layer state change.
 uint32_t layer_state_set_user(uint32_t state) {
@@ -277,37 +287,27 @@ uint32_t layer_state_set_user(uint32_t state) {
   ergodox_right_led_2_off();
   ergodox_right_led_3_off();
 
-  uint8_t layer = biton32(state);
+  uint8_t layer = biton32(state); //get highest active layer
   switch (layer) {
-      case 0:
-        #ifdef RGBLIGHT_COLOR_LAYER_0
-          rgblight_setrgb(RGBLIGHT_COLOR_LAYER_0);
-        #else
-          rgblight_init();
-        #endif
-        break;
-      case 1:
-        ergodox_right_led_2_on();
-        #ifdef RGBLIGHT_COLOR_LAYER_1
-          rgblight_setrgb(RGBLIGHT_COLOR_LAYER_1);
-        #endif
-        break;
-      case 2:
-        ergodox_right_led_3_on();
-        #ifdef RGBLIGHT_COLOR_LAYER_2
-          rgblight_setrgb(RGBLIGHT_COLOR_LAYER_2);
-        #endif
-        break;
-      case 3:
-        ergodox_right_led_2_on();
-        ergodox_right_led_3_on();
-        #ifdef RGBLIGHT_COLOR_LAYER_3
-          rgblight_setrgb(RGBLIGHT_COLOR_LAYER_3);
-        #endif
-        break;
-      default:
-        break;
-    }
+    case 1:
+      ergodox_right_led_2_on();
+      if (layer != last_layer) { overlay_effect_set(120, 255, OVERLAY_EFFECT_NONE); }
+      break;
+    case 2:
+      ergodox_right_led_3_on();
+      if (last_layer != layer) { overlay_effect_set(240, 255, OVERLAY_EFFECT_NONE); }
+      break;
+    case 3:
+      ergodox_right_led_2_on();
+      ergodox_right_led_3_on();
+      if (layer != last_layer) { overlay_effect_set(192, 255, OVERLAY_EFFECT_NONE); }
+      break;
+    default:
+      overlay_effect_clear();
+      break;
+  }
+
+  last_layer = layer;
 
   return state;
 };
@@ -332,4 +332,6 @@ void lighting_transform_user(LED_TYPE* frame) {
     frame[i].w = min;
   }
   #endif
+
+  overlay_apply(frame);
 }

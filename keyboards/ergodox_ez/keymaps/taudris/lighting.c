@@ -1,6 +1,6 @@
-#include "ergodox_ez.h"
+#include "quantum.h"
 #include "ws2812.h"
-#include "ledbbtwi.h"
+#include "i2cmaster.h"
 #include "led_tables.h"
 
 extern rgblight_config_t rgblight_config;
@@ -17,6 +17,32 @@ void lighting_transform_user(LED_TYPE* frame) {
 
 void rgblight_set(void) {
   is_lighting_dirty = true;
+}
+
+void i2c_setleds(LED_TYPE *ledarray, uint16_t leds) {
+  uint8_t i2c_status;
+
+  uint16_t datlen;
+  uint8_t curbyte;
+  uint8_t *data;
+
+  datlen = leds*sizeof(LED_TYPE);
+  data = (uint8_t*)ledarray;
+
+  //send just the first byte of led data to unstick the fpga firmware
+  i2c_status = i2c_start(0x84 | I2C_WRITE); if (i2c_status) goto out;
+  i2c_write(*data); if (i2c_status) goto out;
+  i2c_stop();
+
+  i2c_status = i2c_start(0x84 | I2C_WRITE); if (i2c_status) goto out;
+
+  while (datlen--) {
+    curbyte=*data++;
+    i2c_status = i2c_write(curbyte); if (i2c_status) goto out;
+  }
+
+out:
+  i2c_stop();
 }
 
 void lighting_task(void) {
@@ -47,6 +73,6 @@ void lighting_task(void) {
   is_lighting_dirty = false;
 
   //send to leds
-  ledbbtwi_setleds(frame, RGBLED_NUM);
+  i2c_setleds(frame, RGBLED_NUM);
   ws2812_setleds(frame, RGBLED_NUM);
 }

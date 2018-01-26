@@ -389,7 +389,8 @@ enum quantum_keycodes {
     BL_BRTG,
 
     // RGB functionality
-    RGB_TOG,
+    RGB_MIN,
+    RGB_TOG = RGB_MIN,
     RGB_MODE_FORWARD,
     RGB_MODE_REVERSE,
     RGB_HUI,
@@ -406,6 +407,7 @@ enum quantum_keycodes {
     RGB_MODE_KNIGHT,
     RGB_MODE_XMAS,
     RGB_MODE_GRADIENT,
+    RGB_MAX = RGB_MODE_GRADIENT,
 
     // Left shift, open paren
     KC_LSPO,
