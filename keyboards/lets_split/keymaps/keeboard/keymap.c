@@ -4,6 +4,7 @@
 #include "eeconfig.h"
 #include "lighting.h"
 #include "overlay.h"
+#include "overlay_effect.h"
 #include "split_util.h"
 
 extern keymap_config_t keymap_config;
@@ -172,37 +173,75 @@ void persistent_default_layer_set(uint16_t default_layer) {
   default_layer_set(default_layer);
 }
 
+inline void layer_state_change(void) {
+  layer_or(0);
+}
+
+uint32_t sticky_layers = 0;
+
+void layer_sticky_sync(void) {
+  sticky_layers &= layer_state;
+}
+
+void layer_sticky_set(uint8_t layer) {
+  sticky_layers |= 1UL << layer;
+  layer_state_change();
+}
+
 #define LIGHTING_LAYER_EXCLUSIONS (1UL<<_ADJUST)
 
 uint32_t layer_state_set_user(uint32_t state) {
-  uint32_t lighting_layer_state = (state | default_layer_state) & ~LIGHTING_LAYER_EXCLUSIONS;
-  uint32_t highest_layer = biton32(lighting_layer_state);
-  switch (highest_layer) {
-    case _QWERTY:
-      overlay_color_clear(); //no color
-      break;
-    case _HYPER:
-      overlay_color_set(96, 255); //yellowish green
-      break;
-    case _GAME:
-      overlay_color_set(0, 255); //blood red
-      break;
-    case _RAISE:
-      overlay_color_set(160, 255); //teal
-      break;
-    case _LOWER:
-      overlay_color_set(232, 255); //blue
-      break;
-    case _COMBO:
-      overlay_color_set(32, 255); //orange
-      break;
-    //case _ADJUST: excluded
-  }
-  return state;
-}
+  layer_sticky_sync();
 
-inline void layer_state_change(void) {
-  layer_state_set_user(layer_state);
+  uint32_t lighting_layer_state = (state | default_layer_state) & ~LIGHTING_LAYER_EXCLUSIONS;
+
+  uint8_t layer = biton32(lighting_layer_state);
+  uint8_t effect;
+
+  if (layer != _COMBO) {
+    effect = sticky_layers & (1UL << layer)
+      ? OVERLAY_EFFECT_STROBE_AND_BREATHE
+      : OVERLAY_EFFECT_NONE;
+  } else {
+    uint32_t combo = (1UL << _LOWER) | (1UL << _RAISE);
+    effect = (sticky_layers & combo) == combo
+      ? OVERLAY_EFFECT_STROBE_AND_BREATHE
+      : OVERLAY_EFFECT_NONE;
+  }
+
+  static uint8_t last_layer = 0, last_effect = 0;
+
+  if (last_layer != layer || last_effect != effect) {
+    last_layer = layer;
+    last_effect = effect;
+
+    switch (layer) {
+      //default layers
+      case _QWERTY:
+        overlay_effect_clear(); //no color
+        break;
+      case _HYPER:
+        overlay_effect_set(96, 255, effect); //yellowish green
+        break;
+      case _GAME:
+        overlay_effect_set(0, 255, effect); //blood red
+        break;
+
+      //layers
+      case _RAISE:
+        overlay_effect_set(160, 255, effect); //teal
+        break;
+      case _LOWER:
+        overlay_effect_set(232, 255, effect); //blue
+        break;
+      case _COMBO:
+        overlay_effect_set(32, 255, effect); //orange
+        break;
+      //case _ADJUST: excluded
+    }
+  }
+
+  return state;
 }
 
 static uint16_t last_keycode;
@@ -235,7 +274,11 @@ bool process_record_user_internal(uint16_t keycode, keyrecord_t *record) {
           layer_on(_LOWER);
         }
       } else {
-        if (last_keycode != LOWER) {
+        if (last_keycode == LOWER) {
+          if (IS_LAYER_ON(_LOWER)) {
+            layer_sticky_set(_LOWER);
+          }
+        } else {
           layer_off(_LOWER);
         }
       }
@@ -249,7 +292,11 @@ bool process_record_user_internal(uint16_t keycode, keyrecord_t *record) {
           layer_on(_RAISE);
         }
       } else {
-        if (last_keycode != RAISE) {
+        if (last_keycode == RAISE) {
+          if (IS_LAYER_ON(_RAISE)) {
+            layer_sticky_set(_RAISE);
+          }
+        } else {
           layer_off(_RAISE);
         }
       }
@@ -265,7 +312,7 @@ bool process_record_user_internal(uint16_t keycode, keyrecord_t *record) {
     case FLSHRST:
       rgblight_timer_disable();
       rgblight_config.enable = 1;
-      overlay_color_clear();
+      overlay_effect_clear();
       rgblight_setrgb(255, 0, 0);
       lighting_task();
       _delay_ms(100);
@@ -301,6 +348,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 }
 
 void matrix_scan_user() {
+  overlay_effect_task();
   lighting_task();
 }
 
