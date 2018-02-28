@@ -32,7 +32,7 @@ inline static uint8_t multiply_scalar(uint8_t a, uint8_t b) {
 }
 
 void overlay_effect_task(void) {
-  static uint16_t timer_last = 0;
+  static uint16_t last_elapsed = 0, timer_last;
   static uint8_t effect_state = 0, effect_brightness = 255, last_val;
 
   uint8_t val;
@@ -40,9 +40,13 @@ void overlay_effect_task(void) {
   if (!is_set) { return; }
 
   if (is_dirty) {
+    last_elapsed = 0;
     timer_last = timer_read();
     effect_state = 0;
     effect_brightness = 255;
+  } else {
+    last_elapsed += timer_elapsed(timer_last);
+    timer_last = timer_read();
   }
 
   val = rgblight_config.val;
@@ -56,16 +60,14 @@ void overlay_effect_task(void) {
 
     case OVERLAY_EFFECT_STROBE_AND_BREATHE: {
       //strobe
-      //repeat 5x: 2 seconds to fade in, 2 seconds to fade out
-
-      uint16_t last_elapsed = timer_elapsed(timer_last);
+      //repeat 3x: 2 seconds to fade in, 2 seconds to fade out
 
       switch (effect_state) {
         case 0: //strobe off #1
         case 2: //strobe off #2
           effect_brightness = 0;
           if (last_elapsed >= 100) {
-            timer_last = timer_read();
+            last_elapsed -= 100;
             effect_state++;
           }
           break;
@@ -74,18 +76,15 @@ void overlay_effect_task(void) {
         case 3: //strobe on #2
           effect_brightness = 255;
           if (last_elapsed >= 100) {
-            timer_last = timer_read();
+            last_elapsed -= 100;
             effect_state++;
           }
           break;
 
         case 4: //fade out #1
         case 6:
-        case 8:
-        //case 10:
-        //case 12: //fade out #5
+        case 8: //fade out #3
           if (last_elapsed > 8) {
-            timer_last = timer_read();
             while (last_elapsed > 8) {
               if (effect_brightness == 128) {
                 effect_state++;
@@ -99,11 +98,8 @@ void overlay_effect_task(void) {
 
         case 5: //fade in #1
         case 7:
-        case 9:
-        //case 11:
-        //case 13: //fade in #5
+        case 9: //fade in #3
           if (last_elapsed > 8) {
-            timer_last = timer_read();
             while (last_elapsed > 8) {
               if (effect_brightness == 255) {
                 effect_state++;
