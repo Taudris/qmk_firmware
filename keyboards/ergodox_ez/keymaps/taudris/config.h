@@ -7,6 +7,17 @@
 #define PERMISSIVE_HOLD
 #define ONESHOT_TAP_TOGGLE 2
 
+#define FORCE_NKRO
+
+#undef IS_COMMAND
+#define IS_COMMAND() ( \
+    keyboard_report->mods == (MOD_BIT(KC_LCTL) | MOD_BIT(KC_RCTL)) \
+)
+
+#define MAGIC_KEY_SWITCH_LAYER_WITH_CUSTOM false
+#define MAGIC_KEY_SWITCH_LAYER_WITH_FKEYS false
+#define MAGIC_KEY_SWITCH_LAYER_WITH_NKEYS false
+
 #undef RGBLIGHT_HUE_STEP
 #define RGBLIGHT_HUE_STEP 8
 
