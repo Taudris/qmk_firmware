@@ -113,7 +113,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* Lower
  * ,-----------------------------------------. ,-----------------------------------------.
- * |   `  |      |      |  Up  |      |      | |      |   7  |   8  |   9  |      | Del  |
+ * |   `  |      |      |  Up  |      |      | |      |   7  |   8  |   9  |   =  | Del  |
  * |------+------+------+------+------+------| |------+------+------+------+------+------|
  * | Tab  |      | Left | Down |Right |      | |   +  |   4  |   5  |   6  |   *  |   \  |
  * |------+------+------+------+------+------| |------+------+------+------+------+------|
@@ -123,7 +123,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * `-----------------------------------------' `-----------------------------------------'
  */
 [_LOWER] = KEYMAP( \
-  KC_GRV,  XXXXXXX, XXXXXXX, KC_UP,   XXXXXXX, XXXXXXX, /*  */ XXXXXXX, KC_7,    KC_8,    KC_9,   XXXXXXX, KC_DEL, \
+  KC_GRV,  XXXXXXX, XXXXXXX, KC_UP,   XXXXXXX, XXXXXXX, /*  */ XXXXXXX, KC_7,    KC_8,    KC_9,   KC_EQL,  KC_DEL, \
   KC_TAB,  XXXXXXX, KC_LEFT, KC_DOWN, KC_RGHT, XXXXXXX, /*  */ KC_PLUS, KC_4,    KC_5,    KC_6,   KC_ASTR, KC_BSLS, \
   KC_LSFT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, /*  */ KC_MINS, KC_1,    KC_2,    KC_3,   KC_SLSH, KC_ENT, \
   KC_LCTL, XXXXXXX, XXXXXXX, XXXXXXX, LOWER,   KC_SPC,  /*  */ KC_0,    RAISE,   XXXXXXX, KC_DOT, KC_RALT, ADJUST \
