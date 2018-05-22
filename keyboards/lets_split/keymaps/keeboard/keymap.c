@@ -309,6 +309,14 @@ bool process_record_user_internal(uint16_t keycode, keyrecord_t *record) {
         layer_off(_ADJUST);
       }
       return false;
+    case KC_Q:
+      if (default_layer_state & (1<<_GAME)) {
+        if (record->event.pressed) {
+          SEND_STRING("www");
+        }
+        return false;
+      }
+      break;
     case FLSHRST:
       rgblight_timer_disable();
       rgblight_config.enable = 1;
