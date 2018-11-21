@@ -45,11 +45,18 @@ void overlay_apply(LED_TYPE* frame) {
       }
     }
 
-    LED_TYPE color;
+    LED_TYPE color, median;
     sethsv(color_hue, color_sat, val, &color);
+    sethsv(0, 0, 0, &median);
 
     memcpy(&frame[0], &color, sizeof(LED_TYPE));
     memcpy(&frame[1], &color, sizeof(LED_TYPE));
+    memcpy(&frame[2], &color, sizeof(LED_TYPE));
+    memcpy(&frame[3], &median, sizeof(LED_TYPE));
+    memcpy(&frame[4], &median, sizeof(LED_TYPE));
+    memcpy(&frame[RGBLED_NUM-5], &median, sizeof(LED_TYPE));
+    memcpy(&frame[RGBLED_NUM-4], &median, sizeof(LED_TYPE));
+    memcpy(&frame[RGBLED_NUM-3], &color, sizeof(LED_TYPE));
     memcpy(&frame[RGBLED_NUM-2], &color, sizeof(LED_TYPE));
     memcpy(&frame[RGBLED_NUM-1], &color, sizeof(LED_TYPE));
   }

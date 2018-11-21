@@ -2,6 +2,7 @@
 #include "ws2812.h"
 #include "i2cmaster.h"
 #include "led_tables.h"
+#include "lighting.h"
 
 extern rgblight_config_t rgblight_config;
 
