@@ -1,7 +1,7 @@
-#include "quantum.h"
-#include "ws2812.h"
-#include "i2cmaster.h"
-#include "led_tables.h"
+#include <quantum.h>
+#include <ws2812.h>
+#include <i2c_master.h>
+#include <led_tables.h>
 
 extern rgblight_config_t rgblight_config;
 
@@ -30,15 +30,15 @@ void i2c_setleds(LED_TYPE *ledarray, uint16_t leds) {
   data = (uint8_t*)ledarray;
 
   //send just the first byte of led data to unstick the fpga firmware
-  i2c_status = i2c_start(0x84 | I2C_WRITE); if (i2c_status) goto out;
-  i2c_write(*data); if (i2c_status) goto out;
+  i2c_status = i2c_start(0x84 | I2C_WRITE, 1000); if (i2c_status) goto out;
+  i2c_write(*data, 1000); if (i2c_status) goto out;
   i2c_stop();
 
-  i2c_status = i2c_start(0x84 | I2C_WRITE); if (i2c_status) goto out;
+  i2c_status = i2c_start(0x84 | I2C_WRITE, 1000); if (i2c_status) goto out;
 
   while (datlen--) {
     curbyte=*data++;
-    i2c_status = i2c_write(curbyte); if (i2c_status) goto out;
+    i2c_status = i2c_write(curbyte, 1000); if (i2c_status) goto out;
   }
 
 out:

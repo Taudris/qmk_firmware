@@ -27,6 +27,12 @@ enum custom_keycodes {
 #define KC_RESET_WIN_GRAPHICS_DRIVER LCTL(LSFT(LGUI(KC_B)))
 #define KC_RWGD KC_RESET_WIN_GRAPHICS_DRIVER
 
+#define KC_THUMB_UP LCTL(LSFT(KC_1))
+#define KC_THUP KC_THUMB_UP
+
+#define KC_THUMB_DOWN LCTL(LSFT(KC_2))
+#define KC_THDN KC_THUMB_DOWN
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* Keymap 0: Basic layer
  *
@@ -130,7 +136,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
  * |        |      |      |      |      |      |------|           |------|      |      |      |      |      |        |
  * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
- * |        |      |      |      |      |      |      |           |      |      | Mute | VolUp|      |      |        |
+ * |        |      |      |      |      |      |      |           |      |      | Mute | VolUp| ThUp | ThDn |        |
  * `--------+------+------+------+------+-------------'           `-------------+------+------+------+------+--------'
  *   |      |      |      |      |      |                                       | Prev | VolDn| Next | Play | BASE |
  *   `----------------------------------'                                       `----------------------------------'
@@ -158,7 +164,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_RWGD,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,
   KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,
             KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,
-  KC_TRNS,  KC_TRNS,  KC_MUTE,  KC_VOLU,  KC_TRNS,  KC_TRNS,  KC_TRNS,
+  KC_TRNS,  KC_TRNS,  KC_MUTE,  KC_VOLU,  KC_THUP,  KC_THDN,  KC_TRNS,
                       KC_MPRV,  KC_VOLD,  KC_MNXT,  KC_MPLY,  KC_TRNS,
 
   RGB_TOG, RGB_SLD,
@@ -258,7 +264,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         ergodox_right_led_3_off();
         reset_keyboard();
         return false;
-      case RGB_MIN ... RGB_MAX:
+      case RGB_MIN ... RGB_MODE_RGBTEST:
         if (keycode != RGB_TOG) {
           overlay_effect_clear(); //clear the overlay effect so the user can see the RGB adjustments more clearly
         }
