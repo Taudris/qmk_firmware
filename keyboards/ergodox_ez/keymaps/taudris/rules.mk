@@ -12,7 +12,8 @@ API_SYSEX_ENABLE = no
 RGBLIGHT_ENABLE  = yes
 
 RGBLIGHT_CUSTOM_DRIVER = yes
-SRC += lighting.c \
+SRC += activity_timer.c \
+       lighting.c \
        overlay.c \
        overlay_effect.c \
        ws2812.c
