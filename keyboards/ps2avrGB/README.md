@@ -10,11 +10,15 @@ Note that this is a complete replacement for the firmware, so you won't be
 using Bootmapper Client to change any keyboard settings, since not all the
 USB report options are supported.
 
+This is an example based on the b.mini keyboard for making other keyboards
+compatible with QMK; fully supported boards have their own directory.
+
 ## Supported Boards
 
-Only the [B.mini X2](http://winkeyless.kr/product/b-mini-x2-pcb/) has been
-tested so far (since it's the only one I own). But other boards that use
-the ps2avrGB firmware should work as well.
+- [b.fake](https://github.com/qmk/qmk_firmware/tree/master/keyboards/bfake)
+- [b.mini](https://github.com/qmk/qmk_firmware/tree/master/keyboards/bmini)
+- [b.face](https://github.com/qmk/qmk_firmware/tree/master/keyboards/bface)
+- [pearl](https://github.com/qmk/qmk_firmware/tree/master/keyboards/pearl)
 
 ## Installing
 
@@ -26,7 +30,7 @@ $ brew cask install crosspack-avr
 $ brew install --HEAD https://raw.githubusercontent.com/robertgzr/homebrew-tap/master/bootloadhid.rb
 ```
 
-In order to use the `./program` script, which can reboot the board into
+In order to use the `./util/atmega32a_program.py` script, which can reboot the board into
 the bootloader, you'll need Python 2 with PyUSB installed:
 
 ```
